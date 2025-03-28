@@ -3,9 +3,6 @@ import pandas as pd
 import os
 import chardet
 
-
-
-#%%
 def unif_df (caminho_diretorio, caminho_arquivo_referencia):
     contador = 0
     dicionario_dataframes = {}
@@ -60,7 +57,10 @@ print(arquivo_referencia)
 dicionario_df = unif_df(caminho_diretorio , None)
 
 #%%
-def analise_colunas (dicionario_dataframes, df_referencia):
+
+
+#FIXME - Alterar esse código criando o to_csv dos arquivos corretos e criando dicionario dos incorretos
+def checar_dfs_e_concatenar (dicionario_dataframes, df_referencia):
     contador_dfs = 0
     dicionario_dataframes_incorretos = {}
     dicionario_dataframes_corretos = {}
@@ -71,7 +71,7 @@ def analise_colunas (dicionario_dataframes, df_referencia):
             print(f'🌐 Verificando {chaves} - Quantidade de colunas: {len(df.columns)}')
             dicionario_dataframes_corretos[chaves] = df
             print('✅ Possui colunas iguais!')
-        
+            
         else:
             dicionario_dataframes_incorretos[chaves] = df
             print(f'🌐Verificando quantidade de colunas: {len(df.columns)}')
@@ -80,6 +80,18 @@ def analise_colunas (dicionario_dataframes, df_referencia):
     print('✖️ Valores ✖️')
     print(f'🔃 N° de df corretos: {len(dicionario_dataframes_corretos)}')
     print(f'🔃 N° de df inccoretos: {len(dicionario_dataframes_incorretos)}')
-            
+    df_concatenado = pd.concat(dicionario_dataframes_corretos.values(), ignore_index = True)
+    df_concatenado.to_csv("dados_unidos/dados_unidos_corretos.csv", index=False, sep=";", encoding="utf-8")
+    return dicionario_dataframes_incorretos       
 #%%
 
+df_errado = checar_dfs_e_concatenar(dicionario_df, arquivo_referencia)
+
+
+# %%
+df_errado.items()
+
+
+for index, df in df_errado.items():
+    print(index)
+# %%
